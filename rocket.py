@@ -83,3 +83,14 @@ width = float64(800.0)
 height = float64(600.0)
 
 m.call(exports['resize'], width, height)
+
+# Game loop
+import time
+
+last = time.time()
+while True:
+    now = time.time()
+    dt = now - last
+    last = now
+    m.call(exports['update'], float64(dt))
+    m.call(exports['draw'])
