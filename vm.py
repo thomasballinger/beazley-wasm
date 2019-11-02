@@ -6,6 +6,13 @@ class Function:
         self.returns = returns
         self.code = code
 
+class ImportFunction:
+    def __init__(self, nparams, returns, call):
+        self.nparams = nparams
+        self.returns = returns
+        self.call = call
+
+
 class Machine:
     def __init__(self, functions, memsize=65536):
         self.functions = functions
@@ -26,12 +33,15 @@ class Machine:
 
     def call(self, func, *args):
         locals = dict(enumerate(args))
-        try:
-            self.execute(func.code, locals)
-        except Return:
-            pass
-        if func.returns:
-            return self.pop()
+        if isinstance(func, Function):
+            try:
+                self.execute(func.code, locals)
+            except Return:
+                pass
+            if func.returns:
+                return self.pop()
+        else:
+            return func.call(*args)  # External (import function)
 
     def execute(self, instructions, locals):
         for op, *args in instructions:
@@ -144,6 +154,12 @@ class Return(Exception):
 
 
 def example():
+    def py_display_player(x):
+        import time
+        print(' '*int(x) + '<O:>')
+        time.sleep(0.05)
+
+    display_player = ImportFunction(nparams=1, returns=None, call=py_display_player)
     # def update_position(x, v, dt):
     #     return x + v*dt
     #
@@ -155,7 +171,7 @@ def example():
         ('add',),
     ])
 
-    functions = [update_position]
+    functions = [update_position, display_player]
 
     x_addr = 22
     v_addr = 42
@@ -174,6 +190,9 @@ def example():
     m.execute([
         ('block', [
             ('loop', [
+                ('const', x_addr),
+                ('load',),
+                ('call', 1),
                 ('const', x_addr),
                 ('load',),
                 ('const', 0.0),
