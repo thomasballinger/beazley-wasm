@@ -13,29 +13,38 @@ import math
 def imp_Math_atan(x):
     return float64(math.atan(x))
 
-def imp_clear_screen():
-    print('clear screen')
-
 def imp_cos(x):
     return float64(math.cos(x))
 
-def imp_draw_bullet(x, y):
-    print('draw_bullet', x, y)
-
-def imp_draw_enemy(x, y):
-    print('draw_enemy', x, y)
-
-def imp_draw_particle(x, y, z):
-    print('draw_particle', x, y, z)
-
-def imp_draw_player(x, y, z):
-    print('draw_player', x, y, z)
-
-def imp_draw_score(s):
-    print('draw_score', s)
-
 def imp_sin(x):
     return float64(math.sin(x))
+
+import pygame
+
+pygame.init()
+
+size = width, height = (800, 600)
+screen = pygame.display.set_mode(size)
+
+def imp_clear_screen():
+    screen.fill((0,0,0))
+
+def imp_draw_bullet(x, y):
+    pygame.draw.circle(screen, (255, 255, 255), (int(x), int(y)), 2)
+
+def imp_draw_enemy(x, y):
+    pygame.draw.circle(screen, (255, 0, 255), (int(x), int(y)), 10, 2)
+
+def imp_draw_particle(x, y, z):
+    pygame.draw.circle(screen, (255, 255, 0), (int(x), int(y)), 5)
+
+def imp_draw_player(x, y, z):
+    pygame.draw.circle(screen, (255, 255, 0), (int(x), int(y)), 10)
+
+def imp_draw_score(s):
+    #print('draw_score', s)
+    pass
+
 
 import vm
 
@@ -89,8 +98,34 @@ import time
 
 last = time.time()
 while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            raise SystemExit()
+        elif event.type == pygame.KEYUP:
+            if event.key == 32:
+                m.call(exports['toggle_shoot'], int32(0))
+            elif event.key == 275:
+                m.call(exports['toggle_turn_right'], int32(0))
+            elif event.key == 276:
+                m.call(exports['toggle_turn_left'], int32(0))
+            elif event.key == 277:
+                m.call(exports['toggle_boost'], int32(0))
+
+        elif event.type == pygame.KEYDOWN:
+            if event.key == 32:
+                m.call(exports['toggle_shoot'], int32(1))
+            elif event.key == 275:
+                m.call(exports['toggle_turn_right'], int32(1))
+            elif event.key == 276:
+                m.call(exports['toggle_turn_left'], int32(1))
+            elif event.key == 277:
+                m.call(exports['toggle_boost'], int32(1))
+
     now = time.time()
     dt = now - last
     last = now
     m.call(exports['update'], float64(dt))
     m.call(exports['draw'])
+    pygame.display.flip()
+
+
