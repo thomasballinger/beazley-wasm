@@ -33,13 +33,13 @@ def imp_draw_bullet(x, y):
     pygame.draw.circle(screen, (255, 255, 255), (int(x), int(y)), 2)
 
 def imp_draw_enemy(x, y):
-    pygame.draw.circle(screen, (255, 0, 255), (int(x), int(y)), 10, 2)
+    pygame.draw.circle(screen, (255, 0, 255), (int(x), int(y)), 15, 2)
 
 def imp_draw_particle(x, y, z):
-    pygame.draw.circle(screen, (255, 255, 0), (int(x), int(y)), 5)
+    pygame.draw.circle(screen, (255, 255, 0), (int(x), int(y)), abs(int(z)))
 
 def imp_draw_player(x, y, z):
-    pygame.draw.circle(screen, (255, 255, 0), (int(x), int(y)), 10)
+    pygame.draw.circle(screen, (255, 255, 0), (int(x), int(y)), 10, 2)
 
 def imp_draw_score(s):
     #print('draw_score', s)
